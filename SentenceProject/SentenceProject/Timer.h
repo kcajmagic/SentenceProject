@@ -24,6 +24,10 @@ public:
 		return output;
 	}
 
+	double get_time(){
+		return (this->end_wall - this->begin_wall);
+	}
+
 private:
 	 double begin_wall;
 	 double end_wall;

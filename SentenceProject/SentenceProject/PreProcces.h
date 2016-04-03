@@ -4,7 +4,14 @@
 #ifndef __PREPROCCESS_CLASS_H__
 #define __PREPROCCESS_CLASS_H__
 #include <iostream>
-#include <ifstream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <iterator>
+#include <algorithm>
+
+#include "Uniqueness.h"
+
 using namespace std;
 
 class PreProcces{
@@ -13,8 +20,68 @@ public:
 		this->filename = filename;
 	}
 
+	vector<string> split(const string& s, const string& delim, const bool keep_empty = true) {
+		vector<string> result;
+		if (delim.empty()) {
+			result.push_back(s);
+			return result;
+		}
+		string::const_iterator substart = s.begin(), subend;
+		while (true) {
+			subend = search(substart, s.end(), delim.begin(), delim.end());
+			string temp(substart, subend);
+			if (keep_empty || !temp.empty()) {
+				result.push_back(temp);
+			}
+			if (subend == s.end()) {
+				break;
+			}
+			substart = subend + delim.size();
+		}
+		return result;
+	}
+
+	void read_into_memory_and_count_unique(Uniqueness *counter){
+		string line;
+		ifstream file(filename);
+		if (file.is_open()){
+			while (getline(file, line)){
+				counter->increase_unique(line);
+				vector<string> words = split(line, " ");
+				data.push_back(words);
+			}
+			file.close();
+		}
+		else {
+			cout << "Unable to open file: " << filename << endl;
+		}
+	}
+
+	void read_through_every_line_into_memory(void (*function)(string) = NULL){
+		string line;
+		ifstream file(filename);
+		if (file.is_open()){
+			while (getline(file, line)){
+				if (function){
+					function(line);
+				}
+				vector<string> words = split(line, " ");
+				data.push_back(words);
+			}
+			file.close();
+		}
+		else {
+			cout << "Unable to open file: " << filename << endl;
+		}
+	}
+
+	vector<vector<string>> get_data(){
+		return data;
+	}
+
 private:
 	string filename;
+	vector<vector<string>> data;
 };
 
 

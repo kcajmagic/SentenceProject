@@ -82,6 +82,8 @@
     <ClInclude Include="Clock.h" />
     <ClInclude Include="PreProcces.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Uniqueness.h" />
+    <ClInclude Include="WordHasher.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

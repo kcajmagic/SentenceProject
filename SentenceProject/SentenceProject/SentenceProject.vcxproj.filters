@@ -29,5 +29,11 @@
     <ClInclude Include="PreProcces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WordHasher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Uniqueness.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
