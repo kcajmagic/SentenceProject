@@ -35,5 +35,11 @@
     <ClInclude Include="Uniqueness.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MergeSort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DamerauLevenshtein.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
