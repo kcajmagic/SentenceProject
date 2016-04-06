@@ -11,6 +11,7 @@
 #include <algorithm>
 
 #include "Uniqueness.h"
+#include "WordHasher.h"
 
 using namespace std;
 
@@ -57,6 +58,30 @@ public:
 		}
 	}
 
+	vector<vector<unsigned long long>> read_through_lines_and_hash(){
+		string line;
+		ifstream file(filename);
+		WordHasher hasher;
+		vector<vector<unsigned long long>> hashed_data;
+		if (file.is_open()){
+			while (getline(file, line)){
+				vector<string> words = split(line, " ");
+				this->data.push_back(words);
+				vector<unsigned long long> hashed_words;
+				for each (string word in words)
+				{
+					hashed_words.push_back(hasher.get_next_value(word));
+				}
+				hashed_data.push_back(hashed_words);
+			}
+			file.close();
+		}
+		else {
+			cout << "Unable to open file: " << filename << endl;
+		}
+		return hashed_data;
+	}
+
 	void read_through_every_line_into_memory(void (*function)(string) = NULL){
 		string line;
 		ifstream file(filename);
@@ -78,6 +103,9 @@ public:
 	vector<vector<string>> get_data(){
 		return data;
 	}
+
+
+
 
 private:
 	string filename;

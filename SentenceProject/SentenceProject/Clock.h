@@ -36,6 +36,7 @@ double get_cpu_time(){
 	}
 	else{
 		//  Handle error
+		cout << "Error Getting Time" << endl;
 		return 0;
 	}
 }

@@ -9,8 +9,6 @@
 #include <algorithm>
 #include <thread>
 
-#define NOTHREADS 2
-
 using namespace std;
 
 void merge(vector<vector<unsigned long long>>& vec, int start, int mid, int end)
@@ -23,7 +21,7 @@ void merge(vector<vector<unsigned long long>>& vec, int start, int mid, int end)
 	int index = start;
 	while (a < one.size() && b < two.size())
 	{
-		if (one[a] < two[b])
+		if (one[a].size() < two[b].size())
 			vec[index++] = one[a++];
 		else
 			vec[index++] = two[b++];
@@ -38,22 +36,16 @@ void merge(vector<vector<unsigned long long>>& vec, int start, int mid, int end)
 
 void merge_sort(vector<vector<unsigned long long>>& vec, int start, int end)
 {
-	if (start >= end)
+	if (start >= end){
 		return;
+	}
 
 	int mid = start + (end - start) / 2;
 
-	// multi-thread version
 	thread first(merge_sort, ref(vec), start, mid);
 	thread second(merge_sort, ref(vec), mid + 1, end);
 	first.join();
 	second.join();
-
-	/*
-	// single-thread version, testified.
-	merge_sort(vec, start, mid);
-	merge_sort(vec, mid + 1, end);
-	*/
 
 	merge(vec, start, mid, end);
 }

@@ -81,8 +81,10 @@
   <ItemGroup>
     <ClInclude Include="Clock.h" />
     <ClInclude Include="DamerauLevenshtein.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MergeSort.h" />
     <ClInclude Include="PreProcces.h" />
+    <ClInclude Include="Procces.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Uniqueness.h" />
     <ClInclude Include="WordHasher.h" />
