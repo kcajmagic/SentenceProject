@@ -27,11 +27,11 @@ void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index
 	unsigned long long count = 0;
 	thread_status.push_back(true);
 	//  cout << "************** Thread " << thread_status.size() << " | " << lower_index << " <-> " << higher_index << " |---> Size " << data.size() << " n " << n << endl;
-	for (int i = lower_index; i < higher_index; i++) {
-		for (int j = i + 1; j < higher_index; j++) {
-			cout << "I: " << data[i];
-			cout << "J: " << data[j] << endl;
-			unsigned long long value = damerau_levenshtein_algorithm(data[i], data[j]);
+	for (int i = lower_index; i <= higher_index; i++) {
+		for (int j = i + 1; j <= higher_index; j++) {
+			//cout << "I: " << data[i];
+			//cout << "J: " << data[j] << endl;
+			unsigned long long value = damerauLevenshteinDistance(data[i], data[j]);
 
 			if (value == n) {
 				count++;
@@ -45,6 +45,7 @@ void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index
 
 unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned long long>>& data, unsigned int n){
 	bool new_section = true;
+	bool found = false;
 	unsigned long lowest_size = 0;
 	unsigned long lowest_index = 0;
 	unsigned long highest_size = 0;
@@ -53,40 +54,71 @@ unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned lon
 	unsigned long next_size = 0;
 	vector<bool> thread_status;
 	vector<unsigned long long> result;
-	// cout << "Begin: " << data.size() << " N: " << n << endl;
+	
+
+	unsigned long count = 0;
+	for (int i = 0; i < data.size(); i++) {
+		for (int j = i + 1; j < data.size(); j++) {
+			//cout << i << "-" << j << " ";
+			unsigned long long value = damerauLevenshteinDistance(data[i], data[j]);
+			//cout << value << endl;
+			//cout << "I: " << data[i];
+			//cout << "J: " << data[j] << endl;
+
+			if (value == n) {
+				count++;
+			}
+		}
+	}
+
+	//cout << endl << endl << "Long Way "<< count << endl << endl;
+
+	//cout << "Begin: " << data.size() << " N: " << n << endl;
 	for (unsigned long i = 0; i < data.size(); i++) {
-		// cout << "round " << i << endl;
+
 		if (new_section) {
 			lowest_size = data[i].size();
-			next_size = lowest_size + 1;
-			next_index = lowest
 			lowest_index = i;
 			highest_size = lowest_size + 2 * n;
+			next_size = highest_size;
 			new_section = false;
+			found = false;
+			//cout << "New: " << i << "-"<<data[i].size() << " L_S " << lowest_size << " H_S " << highest_size << "  N_S " << next_size << " N_I " << next_index << endl;
 		}
-		// cout << "L_I " << lowest_index << " L_S " << lowest_size << " H_I " << highest_index << " H_S " << highest_size << endl;
+		else{
+			//cout << "          " << i << "-" << data[i].size() << " L_I " << lowest_index << " L_S " << lowest_size << " H_I " << highest_index << " H_S " << highest_size << "  N_S " << next_size << " N_I " << next_index << endl;
+		}
+
+	
+		if (data[i].size() >= next_size && !found){
+			//cout << " ********* FOUND ************ I: " << i << " Size "<< data[i].size() << endl;
+			next_index = i;
+			found = true;
+		}
+		// cout << "L_I " << lowest_index << " L_S " << lowest_size << " H_I " << highest_index << " H_S " << highest_size << "  N_S " << next_size << " N_I " << next_index << endl;
 		if (data[i].size() <= highest_size && i < data.size() - 1 ) {
 			// cout << "Increase High " << i << endl;
 			highest_index = i;
-			if (lowest_size != data[i].size()){
-				next_index = i;
-			}
 		}
 		else {
 			if (i == data.size() - 1) {
 				highest_index = i;
 			}
-			// cout << "Starting Thread: " << lowest_index << " " << highest_index << endl;
-			compare(data, lowest_index, highest_index, result, n, thread_status);
-			//thread compareThread(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
-		/*	if (compareThread.joinable()) {
+			else{
+				i = next_index - 1;
+				new_section = true;
+			}
+			//cout << "|----------> Starting Thread: " << lowest_index << " " << highest_index << endl;
+	
+			//compare(data, lowest_index, highest_index, result, n, thread_status);
+			thread compareThread(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
+			if (compareThread.joinable()) {
 				compareThread.join();
 			}
 			else {
 				cout << "Unable to Join";
-			}*/
-			i = next_index;
-			new_section = true;
+			}
+
 		}
 
 	}
