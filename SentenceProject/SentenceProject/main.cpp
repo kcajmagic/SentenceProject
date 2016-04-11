@@ -8,6 +8,7 @@
 #include <vector>
 #include "Timer.h"
 #include "PreProcces.h"
+#include "Procces.h"
 #include "WordHasher.h"
 #include "Uniqueness.h"
 #include "DamerauLevenshtein.h"
@@ -42,47 +43,51 @@ void print(vector<string> vector){
 	//cout << " -> SIZE: " << vector.size() << endl;
 }
 
-int main(int argc, char** argv){
-	WordHasher hasher;
-	Uniqueness counter;
+int main(int argc, char** argv) {
+	
+	
 	string filename;
+	int distance;
 	cout << "What file shall we work with?  ";
 	cin >> filename;
-	PreProcces preprocces = PreProcces(filename);
-
-
+	cout << "What number of distance do you want to know? ";
+	cin >> distance;
 
 
 	Timer mainTimer = Timer();
-	mainTimer.startTimer();
-	// Begin Computation Block
-	vector<vector<unsigned long long>> data = preprocces.read_through_lines_and_hash();
-	cout << "Before: " << endl << data << endl;
-	merge_sort(data, 0, data.size()-1);
 
-	cout << "After" << endl << data << endl;
+	while (filename != "0") {
+		WordHasher hasher;
+		Uniqueness counter;
+		PreProcces preprocces = PreProcces(filename);
 
-	for (int i = 0; i < data.size(); i++){
-		for (int j = i + 1; j < data.size();j++){
-			//cout << i << " " << j << " " << data[i][0] << " " << data[j][0] << endl;
-			print(data[i]);
-			print(data[j]);
-			cout << endl << endl << "Distance between \"";
-			print(preprocces.get_data()[i]);
-			cout << "\' and \'";
-			print(preprocces.get_data()[j]);
-			cout << "\' is " << damerau_levenshtein_algorithm(data[i], data[j]) << endl;
+		unsigned long long result = 0;
+
+		mainTimer.startTimer();
+		// Begin Computation Block
+		if (distance == 0) {
+			preprocces.read_into_memory_and_count_unique(&counter);
+			result = counter.get_similualre_lines();
 		}
-	}
+		else {
+			vector<vector<unsigned long long>> data = preprocces.read_through_lines_and_hash();
+			merge_sort(data, 0, data.size() - 1);
+			result = find_distance_one_with_sorted_data(data, 1);
+
+		}
+
+		// End Computation Block
+		mainTimer.stopTimer();
+		cout << "File: " << filename << "  Comparing at Distance " << distance << endl << "Result: " << result << " |-Time-> " << mainTimer.get_time() << endl;
 	
+		cout << "What file shall we work with? (0 to end)  ";
+		cin >> filename;
+		cout << "What number of distance do you want to know? ";
+		cin >> distance;
 
 
-	// End Computation Block
-	mainTimer.stopTimer();
-	cout << "Unique Lines: " << counter.get_uniqueness() << endl;
-	cout << "Distance 0 \t\t | Distance 1 \t\t | Time " << endl;
-	cout << "\t" << counter.get_similualre_lines() << "\t\t | " << "   Unknown  \t\t |  " << mainTimer.get_time() << endl;
-//	cout << mainTimer << endl;
+	}
+	//	cout << mainTimer << endl;
 
 	return 0;
 }

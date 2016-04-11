@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 #include <iterator>
-#include <algorithm>
 
 #include "Uniqueness.h"
 #include "WordHasher.h"
@@ -55,6 +54,7 @@ public:
 		}
 		else {
 			cout << "Unable to open file: " << filename << endl;
+			throw 0;
 		}
 	}
 

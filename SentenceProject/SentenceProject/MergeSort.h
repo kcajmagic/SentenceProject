@@ -3,10 +3,7 @@
 
 #ifndef __MERGESORT_CLASS_H__
 #define __MERGESORT_CLASS_H__
-#include <iostream>
 #include <vector>
-#include <iterator>
-#include <algorithm>
 #include <thread>
 
 using namespace std;

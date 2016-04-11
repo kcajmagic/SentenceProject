@@ -3,12 +3,9 @@
 
 #ifndef __DEAMERAULEVENSHTEIN_CLASS_H__
 #define __DEAMERAULEVENSHTEIN_CLASS_H__
-
 #include <vector>
 #include <iterator>
-#include <algorithm>
 #include <unordered_map>
-#include <map>
 
 #include "Matrix.h"
 
@@ -20,6 +17,7 @@ using namespace std;
 
 
 unsigned long long damerau_levenshtein_algorithm(vector<unsigned long long> source, vector<unsigned long long> target){
+	
 	if (source.size() == 0){
 		return target.size() * COST;
 	}
@@ -35,7 +33,6 @@ unsigned long long damerau_levenshtein_algorithm(vector<unsigned long long> sour
 		d.set_value(i + 1, 1, i);
 		d.set_value(i + 1, 0, INFINITY);
 	}
-	cout << endl;
 	for (unsigned long j = 0; j <= target.size(); j++){
 		d.set_value(1, j + 1, j);
 		d.set_value(0, j + 1, INFINITY);

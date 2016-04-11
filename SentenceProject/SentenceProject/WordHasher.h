@@ -4,11 +4,9 @@
 #ifndef __WORDHASHER_CLASS_H__
 #define __WORDHASHER_CLASS_H__
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <iterator>
-#include <algorithm>
 #include <unordered_map>
 
 using namespace std;

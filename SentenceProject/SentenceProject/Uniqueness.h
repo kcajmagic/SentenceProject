@@ -3,7 +3,6 @@
 
 #ifndef __UNIQUENESS_CLASS_H__
 #define __UNIQUENESS_CLASS_H__
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>

@@ -1,3 +1,4 @@
 the dog swam
 the dog ran
+the ran dog
 went swimming
