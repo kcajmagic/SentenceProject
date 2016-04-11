@@ -13,22 +13,24 @@
 
 using namespace std;
 
-//ostream &operator<<(ostream &output, const vector<unsigned long long> vector) {
-//	output << "B";
-//	for (int i = 0; i < vector.size(); i++) {
-//		cout << " -> " << vector[i];
-//	}
-//	output << " SIZE: " << vector.size() << endl;
-//
-//	return output;
-//}
+ostream &operator<<(ostream &output, const vector<unsigned long long> vector) {
+	output << "B";
+	for (int i = 0; i < vector.size(); i++) {
+		cout << " -> " << vector[i];
+	}
+	output << " SIZE: " << vector.size() << endl;
 
-void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index, unsigned long higher_index, vector<unsigned long long>& result, unsigned int n, vector<bool> thread_status) {
+	return output;
+}
+
+void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index, unsigned long higher_index, vector<unsigned long long>& result, unsigned int n, vector<bool>& thread_status) {
 	unsigned long long count = 0;
 	thread_status.push_back(true);
 	//  cout << "************** Thread " << thread_status.size() << " | " << lower_index << " <-> " << higher_index << " |---> Size " << data.size() << " n " << n << endl;
 	for (int i = lower_index; i < higher_index; i++) {
 		for (int j = i + 1; j < higher_index; j++) {
+			cout << "I: " << data[i];
+			cout << "J: " << data[j] << endl;
 			unsigned long long value = damerau_levenshtein_algorithm(data[i], data[j]);
 
 			if (value == n) {
@@ -47,7 +49,8 @@ unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned lon
 	unsigned long lowest_index = 0;
 	unsigned long highest_size = 0;
 	unsigned long highest_index = 0;
-
+	unsigned long next_index = 0;
+	unsigned long next_size = 0;
 	vector<bool> thread_status;
 	vector<unsigned long long> result;
 	// cout << "Begin: " << data.size() << " N: " << n << endl;
@@ -55,6 +58,8 @@ unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned lon
 		// cout << "round " << i << endl;
 		if (new_section) {
 			lowest_size = data[i].size();
+			next_size = lowest_size + 1;
+			next_index = lowest
 			lowest_index = i;
 			highest_size = lowest_size + 2 * n;
 			new_section = false;
@@ -63,20 +68,24 @@ unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned lon
 		if (data[i].size() <= highest_size && i < data.size() - 1 ) {
 			// cout << "Increase High " << i << endl;
 			highest_index = i;
+			if (lowest_size != data[i].size()){
+				next_index = i;
+			}
 		}
 		else {
 			if (i == data.size() - 1) {
 				highest_index = i;
 			}
 			// cout << "Starting Thread: " << lowest_index << " " << highest_index << endl;
-			thread compareThread(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
-			if (compareThread.joinable()) {
+			compare(data, lowest_index, highest_index, result, n, thread_status);
+			//thread compareThread(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
+		/*	if (compareThread.joinable()) {
 				compareThread.join();
 			}
 			else {
 				cout << "Unable to Join";
-			}
-			
+			}*/
+			i = next_index;
 			new_section = true;
 		}
 
