@@ -15,7 +15,7 @@
 
 using namespace std;
 
-unsigned long long damerauLevenshteinDistance(vector<unsigned long long> source, vector<unsigned long long> target){
+uint32_t damerauLevenshteinDistance(vector<uint32_t> source, vector<uint32_t> target){
 	if (source.size() == 0){
 		return target.size() * COST;
 	}
@@ -23,37 +23,37 @@ unsigned long long damerauLevenshteinDistance(vector<unsigned long long> source,
 		return source.size() * COST;
 	}
 
-	unsigned long long m = source.size();
-	unsigned long long n = target.size();
+	uint32_t m = source.size();
+	uint32_t n = target.size();
 
-	unordered_map<unsigned long long, unsigned long> dictionary;
+	unordered_map<uint32_t, uint32_t> dictionary;
 	/* For all i and j, d[i][j] holds the Damerau-Levenshtein distance
 	* between the first i characters of s and the first j characters of t.
 	* Note that the array has (m+1)x(n+1) values.
 	*/
 	Matrix d(m+1, n+1);
-	for (unsigned long long i = 0; i <= m; i++){
+	for (uint32_t i = 0; i <= m; i++){
 		d.at(i, 0) = i;
 	}
-	for (unsigned long long j = 0; j <= n; j++){
+	for (uint32_t j = 0; j <= n; j++){
 		d.at(0, j) = j;
 	}
 
 	// Populate a dictionary with the alphabet of the two strings
-	for (unsigned long long i = 0; i < m; i++){
+	for (uint32_t i = 0; i < m; i++){
 		dictionary[source[i]] = 0;
 	}
-	for (unsigned long long j = 0; j < n; j++){
+	for (uint32_t j = 0; j < n; j++){
 		dictionary[target[j]] = 0;
 	}
 
 	// Determine substring distances
-	for (unsigned long long i = 1; i <= m; i++){
-		unsigned long long db = 0;
-		for (unsigned long long j = 1; j <= n; j++){
-			unsigned long long i1 = dictionary[target[j - 1]];
-			unsigned long long j1 = db;
-			unsigned long long cost = 0;
+	for (uint32_t i = 1; i <= m; i++){
+		uint32_t db = 0;
+		for (uint32_t j = 1; j <= n; j++){
+			uint32_t i1 = dictionary[target[j - 1]];
+			uint32_t j1 = db;
+			uint32_t cost = 0;
 
 			if (source[i - 1] == target[j - 1]){ // Subtract one to start at strings' index zero instead of index one
 				db = j;
@@ -75,7 +75,7 @@ unsigned long long damerauLevenshteinDistance(vector<unsigned long long> source,
 	return d.at(m, n);
 }
 
-unsigned long long damerau_levenshtein_algorithm(vector<unsigned long long> source, vector<unsigned long long> target){
+uint32_t damerau_levenshtein_algorithm(vector<uint32_t> source, vector<uint32_t> target){
 	
 	if (source.size() == 0){
 		return target.size() * COST;
@@ -84,26 +84,26 @@ unsigned long long damerau_levenshtein_algorithm(vector<unsigned long long> sour
 		return source.size() * COST;
 	}
 
-	unsigned long MAX_DISTANCE = source.size() + target.size();
+	uint32_t MAX_DISTANCE = source.size() + target.size();
 	Matrix d(source.size() + 2, target.size() + 2);
 	d.set_value(0, 0, MAX_DISTANCE);
 
-	for (unsigned long i = 0; i <= source.size(); i++){
+	for (uint32_t i = 0; i <= source.size(); i++){
 		d.set_value(i + 1, 1, i);
 		d.set_value(i + 1, 0, INFINITY);
 	}
-	for (unsigned long j = 0; j <= target.size(); j++){
+	for (uint32_t j = 0; j <= target.size(); j++){
 		d.set_value(1, j + 1, j);
 		d.set_value(0, j + 1, INFINITY);
 	}
-	unordered_map<unsigned long long, int> dictionary;
-	vector<unsigned long long> total;
+	unordered_map<uint32_t, int> dictionary;
+	vector<uint32_t> total;
 	total.insert(total.end(), source.begin(), source.end());
 	total.insert(total.end(), target.begin(), target.end());
 
-	for each (unsigned long long word in total)
+	for each (uint32_t word in total)
 	{
-		unordered_map<unsigned long long, int>::const_iterator got = dictionary.find(word);
+		unordered_map<uint32_t, int>::const_iterator got = dictionary.find(word);
 
 		// if the diction done'st contain the source and the sentence
 		if (got == dictionary.end()){
@@ -112,12 +112,12 @@ unsigned long long damerau_levenshtein_algorithm(vector<unsigned long long> sour
 		}
 	}
 
-	for (unsigned long i = 1; i <= source.size(); i++){
-		unsigned long long DB = 0;
-		for (unsigned long j = 1; j <= target.size(); j++){
+	for (uint32_t i = 1; i <= source.size(); i++){
+		uint32_t DB = 0;
+		for (uint32_t j = 1; j <= target.size(); j++){
 
-			unsigned long long k = dictionary[target[j - 1]];
-			unsigned long long li = DB;
+			uint32_t k = dictionary[target[j - 1]];
+			uint32_t li = DB;
 
 			if (source[i - 1] == target[j - 1])
 			{

@@ -32,7 +32,7 @@ double get_cpu_time(){
 		//  Can be tweaked to include kernel times as well.
 		return
 			(double)(d.dwLowDateTime |
-			((unsigned long long)d.dwHighDateTime << 32)) * 0.0000001;
+			((uint32_t)d.dwHighDateTime << 32)) * 0.0000001;
 	}
 	else{
 		//  Handle error

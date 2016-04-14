@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 #include "Timer.h"
 #include "PreProcces.h"
 #include "Procces.h"
@@ -15,10 +16,10 @@
 #include "MergeSort.h"
 
 using namespace std;
-ostream &operator<<(ostream &output, const vector<vector<unsigned long long>> T){
-	for each (vector<unsigned long long> row in T)
+ostream &operator<<(ostream &output, const vector<vector<uint32_t>> T){
+	for each (vector<uint32_t> row in T)
 	{
-		for each(unsigned long long data in row){
+		for each(uint32_t data in row){
 			output << data << " ";
 		}
 		output << endl;
@@ -27,7 +28,7 @@ ostream &operator<<(ostream &output, const vector<vector<unsigned long long>> T)
 }
 
 
-void print(vector<unsigned long long> vector){
+void print(vector<uint32_t> vector){
 	cout << "B";
 	for (int i = 0; i < vector.size(); i++){
 		cout << " -> " << vector[i];
@@ -61,17 +62,19 @@ int main(int argc, char** argv) {
 		Uniqueness counter;
 		PreProcces preprocces = PreProcces(filename);
 
-		unsigned long long result = 0;
+		uint32_t result = 0;
 
 		mainTimer.startTimer();
 		// Begin Computation Block
 		if (distance == 0) {
-			preprocces.read_into_memory_and_count_unique(&counter);
+			preprocces.read_and_count_unique(&counter);
 			result = counter.get_similualre_lines();
 		}
 		else {
-			vector<vector<unsigned long long>> data = preprocces.read_through_lines_and_hash();
+			vector<vector<uint32_t>> data = preprocces.read_through_lines_and_hash();
+			cout << "Completed Reading" << endl;
 			merge_sort(data, 0, data.size() - 1);
+			cout << "Completed Sorting" << endl;
 			result = find_distance_one_with_sorted_data(data, 1);
 
 		}

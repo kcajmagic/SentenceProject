@@ -9,7 +9,7 @@
 class Matrix
 {
 public:
-	Matrix(unsigned long long sizeX, unsigned long long sizeY){
+	Matrix(uint32_t sizeX, uint32_t sizeY){
 		this->sizeX = sizeX;
 		this->sizeY = sizeY;
 		data.resize(sizeX);
@@ -21,23 +21,23 @@ public:
 	}
 
 
-	unsigned long long& at(unsigned long long x, unsigned long long y){
+	uint32_t& at(uint32_t x, uint32_t y){
 		return data[x][y];
 	}
 
-	unsigned long long get_value(unsigned long long x, unsigned long long y){
+	uint32_t get_value(uint32_t x, uint32_t y){
 		return data[x][y];
 	}
 
-	void set_value(unsigned long long x, unsigned long long y, unsigned long long value){
+	void set_value(uint32_t x, uint32_t y, uint32_t value){
 		data[x][y]  = value;
 	}
 
 
 private:
-	unsigned long long sizeX;
-	unsigned long long sizeY;
-	vector<vector<unsigned long long>> data;
+	uint32_t sizeX;
+	uint32_t sizeY;
+	vector<vector<uint32_t>> data;
 };
 
 

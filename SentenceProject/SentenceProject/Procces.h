@@ -8,12 +8,13 @@
 #include <iterator>
 #include <algorithm>
 #include <thread>
+#include <future>
 
 #include "DamerauLevenshtein.h"
 
 using namespace std;
 
-ostream &operator<<(ostream &output, const vector<unsigned long long> vector) {
+ostream &operator<<(ostream &output, const vector<uint32_t> vector) {
 	output << "B";
 	for (int i = 0; i < vector.size(); i++) {
 		cout << " -> " << vector[i];
@@ -23,15 +24,15 @@ ostream &operator<<(ostream &output, const vector<unsigned long long> vector) {
 	return output;
 }
 
-void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index, unsigned long higher_index, vector<unsigned long long>& result, unsigned int n, vector<bool>& thread_status) {
-	unsigned long long count = 0;
+void compare(vector<vector<uint32_t>>& data, uint32_t lower_index, uint32_t higher_index, vector<uint32_t>& result, unsigned int n, vector<bool>& thread_status) {
+	uint32_t count = 0;
 	thread_status.push_back(true);
 	//  cout << "************** Thread " << thread_status.size() << " | " << lower_index << " <-> " << higher_index << " |---> Size " << data.size() << " n " << n << endl;
 	for (int i = lower_index; i <= higher_index; i++) {
 		for (int j = i + 1; j <= higher_index; j++) {
 			//cout << "I: " << data[i];
 			//cout << "J: " << data[j] << endl;
-			unsigned long long value = damerauLevenshteinDistance(data[i], data[j]);
+			uint32_t value = damerauLevenshteinDistance(data[i], data[j]);
 
 			if (value == n) {
 				count++;
@@ -43,38 +44,38 @@ void compare(vector<vector<unsigned long long>>& data, unsigned long lower_index
 }
 
 
-unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned long long>>& data, unsigned int n){
+uint32_t find_distance_one_with_sorted_data(vector<vector<uint32_t>>& data, unsigned int n){
 	bool new_section = true;
 	bool found = false;
-	unsigned long lowest_size = 0;
-	unsigned long lowest_index = 0;
-	unsigned long highest_size = 0;
-	unsigned long highest_index = 0;
-	unsigned long next_index = 0;
-	unsigned long next_size = 0;
+	uint32_t lowest_size = 0;
+	uint32_t lowest_index = 0;
+	uint32_t highest_size = 0;
+	uint32_t highest_index = 0;
+	uint32_t next_index = 0;
+	uint32_t next_size = 0;
 	vector<bool> thread_status;
-	vector<unsigned long long> result;
+	vector<uint32_t> result;
 	
 
-	unsigned long count = 0;
-	for (int i = 0; i < data.size(); i++) {
-		for (int j = i + 1; j < data.size(); j++) {
-			//cout << i << "-" << j << " ";
-			unsigned long long value = damerauLevenshteinDistance(data[i], data[j]);
-			//cout << value << endl;
-			//cout << "I: " << data[i];
-			//cout << "J: " << data[j] << endl;
+	//uint32_t count = 0;
+	//for (int i = 0; i < data.size(); i++) {
+	//	for (int j = i + 1; j < data.size(); j++) {
+	//		//cout << i << "-" << j << " ";
+	//		uint32_t value = damerauLevenshteinDistance(data[i], data[j]);
+	//		//cout << value << endl;
+	//		//cout << "I: " << data[i];
+	//		//cout << "J: " << data[j] << endl;
 
-			if (value == n) {
-				count++;
-			}
-		}
-	}
+	//		if (value == n) {
+	//			count++;
+	//		}
+	//	}
+	//}
 
 	//cout << endl << endl << "Long Way "<< count << endl << endl;
 
 	//cout << "Begin: " << data.size() << " N: " << n << endl;
-	for (unsigned long i = 0; i < data.size(); i++) {
+	for (uint32_t i = 0; i < data.size(); i++) {
 
 		if (new_section) {
 			lowest_size = data[i].size();
@@ -108,26 +109,26 @@ unsigned long long find_distance_one_with_sorted_data(vector<vector<unsigned lon
 				i = next_index - 1;
 				new_section = true;
 			}
-			//cout << "|----------> Starting Thread: " << lowest_index << " " << highest_index << endl;
+			cout << "|----------> Starting Thread: " << lowest_index << " " << highest_index << endl;
 	
-			//compare(data, lowest_index, highest_index, result, n, thread_status);
-			thread compareThread(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
-			if (compareThread.joinable()) {
+			compare(data, lowest_index, highest_index, result, n, thread_status);
+			//async(compare, ref(data), lowest_index, highest_index, ref(result), n, ref(thread_status));
+		/*	if (compareThread.joinable()) {
 				compareThread.join();
 			}
 			else {
 				cout << "Unable to Join";
-			}
+			}*/
 
 		}
 
 	}
 	while (thread_status.size() > 0) {
-		// cout <<"Thread Satus" << thread_status.size();
+		 cout <<"Thread Satus" << thread_status.size();
 		// do nothing
 	}
-	unsigned long long count_result = 0;
-	for each (unsigned long long status in result)
+	uint32_t count_result = 0;
+	for each (uint32_t status in result)
 	{
 		count_result += status;
 		// cout << status << " asdf" << endl;

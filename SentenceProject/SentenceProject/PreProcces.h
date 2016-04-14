@@ -19,6 +19,7 @@ public:
 	PreProcces(string filename){
 		this->filename = filename;
 	}
+	
 
 	vector<string> split(const string& s, const string& delim, const bool keep_empty = true) {
 		vector<string> result;
@@ -41,6 +42,21 @@ public:
 		return result;
 	}
 
+	void read_and_count_unique(Uniqueness *counter) {
+		string line;
+		ifstream file(filename);
+		if (file.is_open()) {
+			while (getline(file, line)) {
+				counter->increase_unique(line);
+			}
+			file.close();
+		}
+		else {
+			cout << "Unable to open file: " << filename << endl;
+			throw 0;
+		}
+	}
+
 	void read_into_memory_and_count_unique(Uniqueness *counter){
 		string line;
 		ifstream file(filename);
@@ -58,16 +74,16 @@ public:
 		}
 	}
 
-	vector<vector<unsigned long long>> read_through_lines_and_hash(){
+	vector<vector<uint32_t>> read_through_lines_and_hash(){
 		string line;
 		ifstream file(filename);
 		WordHasher hasher;
-		vector<vector<unsigned long long>> hashed_data;
+		vector<vector<uint32_t>> hashed_data;
 		if (file.is_open()){
 			while (getline(file, line)){
 				vector<string> words = split(line, " ");
-				this->data.push_back(words);
-				vector<unsigned long long> hashed_words;
+				//this->data.push_back(words);
+				vector<uint32_t> hashed_words;
 				for each (string word in words)
 				{
 					hashed_words.push_back(hasher.get_next_value(word));

@@ -8,10 +8,10 @@
 
 using namespace std;
 
-void merge(vector<vector<unsigned long long>>& vec, int start, int mid, int end)
+void merge(vector<vector<uint32_t>>& vec, int start, int mid, int end)
 {
-	vector<vector<unsigned long long>> one(vec.begin() + start, vec.begin() + mid + 1);
-	vector<vector<unsigned long long>> two(vec.begin() + mid + 1, vec.begin() + end + 1);
+	vector<vector<uint32_t>> one(vec.begin() + start, vec.begin() + mid + 1);
+	vector<vector<uint32_t>> two(vec.begin() + mid + 1, vec.begin() + end + 1);
 
 	int a = 0;
 	int b = 0;
@@ -31,7 +31,7 @@ void merge(vector<vector<unsigned long long>>& vec, int start, int mid, int end)
 		vec[index++] = two[b++];
 }
 
-void merge_sort(vector<vector<unsigned long long>>& vec, int start, int end)
+void merge_sort(vector<vector<uint32_t>>& vec, int start, int end)
 {
 	if (start >= end){
 		return;

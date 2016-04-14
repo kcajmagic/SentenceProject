@@ -17,11 +17,11 @@ public:
 		next_int = 0;
 	}
 
-	unsigned long long get_next_value(string word){
-		unordered_map<string, unsigned long long>::const_iterator got = word_mapping.find(word);
+	uint32_t get_next_value(string word){
+		unordered_map<string, uint32_t>::const_iterator got = word_mapping.find(word);
 		if (got == word_mapping.end()){
 			// Not Found
-			unsigned long long ret_val = next_int;
+			uint32_t ret_val = next_int;
 			word_mapping[word] = ret_val;
 			next_int++;
 			return ret_val;
@@ -31,8 +31,8 @@ public:
 		}
 	}
 private:
-	unsigned long long next_int;
-	unordered_map<string, unsigned long long> word_mapping;
+	uint32_t next_int;
+	unordered_map<string, uint32_t> word_mapping;
 
 };
 
