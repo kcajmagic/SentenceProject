@@ -30,11 +30,11 @@ public:
 		}
 	}
 
-	unsigned long long get_uniqueness(){
+	uint32_t get_uniqueness(){
 		return number_of_unique_lines;
 	}
 
-	unsigned long long get_similualre_lines(){
+	uint32_t get_similualre_lines(){
 		return number_of_same_lines;
 	}
 
@@ -44,8 +44,8 @@ public:
 
 private:
 	unordered_map<string, bool> word_mapping;
-	unsigned long long number_of_unique_lines;
-	unsigned long long number_of_same_lines;
+	uint32_t number_of_unique_lines;
+	uint32_t number_of_same_lines;
 };
 
 #endif /*__UNIQUENESS_CLASS_H__*/
