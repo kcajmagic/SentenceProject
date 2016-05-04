@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 			// Begin Computation Block
 			if (distance == 0) {
 				preprocces.read_and_count_unique(&counter);
-				result = counter.get_uniqueness();
+				result = counter.get_similualre_lines();
 			}
 			else {
 			
