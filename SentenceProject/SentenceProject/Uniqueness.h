@@ -19,13 +19,14 @@ public:
 	}
 
 	void increase_unique(string line){
-		unordered_map<string, bool>::const_iterator got = word_mapping.find(line);
+		unordered_map<string, unsigned int>::const_iterator got = word_mapping.find(line);
 		if (got == word_mapping.end()){
 			// Not Found
 			number_of_unique_lines++;
-			word_mapping[line] = true;
+			word_mapping[line] = 1;
 		}
 		else{
+			word_mapping[line]++;
 			number_of_same_lines++;
 		}
 	}
@@ -38,12 +39,16 @@ public:
 		return number_of_same_lines;
 	}
 
+	unordered_map<string, unsigned int>& get_data() {
+		return word_mapping;
+	}
+
 //	increase get_method(){
 //		return *this->increase_unique;
 //	}
 
 private:
-	unordered_map<string, bool> word_mapping;
+	unordered_map<string, unsigned int> word_mapping;
 	uint32_t number_of_unique_lines;
 	uint32_t number_of_same_lines;
 };

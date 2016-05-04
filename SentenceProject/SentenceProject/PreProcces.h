@@ -98,6 +98,38 @@ public:
 		return hashed_data;
 	}
 
+	vector<vector<uint32_t>> read_through_lines_and_hash_and_generate_thing(unordered_map<vector<uint32_t>, unsigned int>& kv_store) {
+		string line;
+		ifstream file(filename);
+		WordHasher hasher;
+		vector<vector<uint32_t>> hashed_data;
+		if (file.is_open()) {
+			while (getline(file, line)) {
+				vector<string> words = split(line, " ");
+				//this->data.push_back(words);
+				vector<uint32_t> hashed_words;
+				for each (string word in words)
+				{
+					hashed_words.push_back(hasher.get_next_value(word));
+				}
+				
+
+				unordered_map<vector<uint32_t>, unsigned int>::const_iterator got = kv_store.find(hashed_words);
+				if (got == kv_store.end()) {
+					// Not Found
+					kv_store[hashed_words] = 0;
+					hashed_data.push_back(hashed_words);
+				}
+			}
+			file.close();
+		}
+		else {
+			cout << "Unable to open file: " << filename << endl;
+		}
+		return hashed_data;
+	}
+
+
 	void read_through_every_line_into_memory(void (*function)(string) = NULL){
 		string line;
 		ifstream file(filename);
