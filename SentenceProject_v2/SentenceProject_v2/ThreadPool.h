@@ -51,7 +51,7 @@ namespace nbsdx {
 	
 					next_job()();
 					--jobs_left;
-					cout << "Next Job" << jobs_left << endl;
+					//cout << "Next Job" << jobs_left << endl;
 					wait_var.notify_one();
 				}
 			}
@@ -63,7 +63,7 @@ namespace nbsdx {
 			std::function<void(void)> next_job() {
 				std::function<void(void)> res;
 				std::unique_lock<std::mutex> job_lock(queue_mutex);
-				cout << "QUEUE SIZe " << queue.size() << endl;
+				//cout << "QUEUE SIZe " << queue.size() << endl;
 				// Wait for a job if we don't have any.
 				job_available_var.wait(job_lock, [this]() ->bool { return queue.size() || bailout; });
 
@@ -120,7 +120,7 @@ namespace nbsdx {
 				std::lock_guard<std::mutex> guard(queue_mutex);
 				queue.emplace_back(job);
 				++jobs_left;
-				cout << jobs_left << " Left Jobs" << endl;
+				//cout << jobs_left << " Left Jobs" << endl;
 				job_available_var.notify_one();
 			}
 

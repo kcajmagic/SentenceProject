@@ -41,11 +41,13 @@ void merge_sort(vector<Sentence>& vec, int start, int end)
 	}
 
 	int mid = start + (end - start) / 2;
+	merge_sort(vec, start, mid);
+	merge_sort(vec, mid + 1, end);
 
-	thread first(merge_sort, ref(vec), start, mid);
-	thread second(merge_sort, ref(vec), mid + 1, end);
-	first.join();
-	second.join();
+//	thread first(merge_sort, ref(vec), start, mid);
+//	thread second(merge_sort, ref(vec), mid + 1, end);
+//	first.join();
+//	second.join();
 
 	merge(vec, start, mid, end);
 }

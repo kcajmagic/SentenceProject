@@ -15,7 +15,6 @@
 #include "Sentence.h"
 #include "ThreadPool.h"
 
-
 using namespace std;
 using nbsdx::concurrent::ThreadPool;
 
@@ -135,7 +134,8 @@ void compare_same_size(vector<Sentence>& data, uint32_t lower_index, uint32_t hi
 
 
 uint32_t compare(vector<Sentence>& data, unsigned int n) {
-	ThreadPool<MAX_THREADS> pool;
+	//ThreadPool<MAX_THREADS> pool;
+	//PThreadPool *tp = new PThreadPool(MAX_THREADS);
 	vector<thread> comparingMultiple;
 	uint32_t low_index = 0;
 	uint32_t low_size = 0;
@@ -152,12 +152,12 @@ uint32_t compare(vector<Sentence>& data, unsigned int n) {
 			high_index = i;
 		}
 		else {
-			/*thread compareThread(compare_with_store, ref(data), low_index, high_index, ref(result), n, i);
-			comparingMultiple.push_back(move(compareThread));*/
-			std::function<void()> doThing = [&] {
-				compare_same_size(data, low_index, high_index, result, n, i);
-			};
-			pool.AddJob(doThing);
+			thread compareThread(compare_same_size, ref(data), low_index, high_index, ref(result), n, i);
+			comparingMultiple.push_back(move(compareThread));
+			//std::function<void(void)> doThing = [&] {
+			//	compare_same_size(data, low_index, high_index, result, n, i);
+			//};
+			//pool.AddJob(doThing);
 			low_index = i;
 			low_size = data[i].size();
 
@@ -223,35 +223,33 @@ uint32_t compare(vector<Sentence>& data, unsigned int n) {
 			cout << "Thread  L_I " << low_index << "  L_H_I " << low_high_index << " H_I  " << high_index << endl;
 			mtx.unlock();
 			*/
-			//thread compareThread(compare_one_size_to_other_with_store, ref(data), low_index, low_high_index, high_index, ref(result), n);
-			//comparingMultiple.push_back(move(compareThread));
-			std::function<void()> doThing = [&] {
-				compare_one_size_to_other(data, low_index, low_high_index, high_index, result, n);
-			};
-			pool.AddJob(doThing);
-
+			thread compareThread(compare_one_size_to_other, ref(data), low_index, low_high_index, high_index, ref(result), n);
+			comparingMultiple.push_back(move(compareThread));
+			//std::function<void()> doThing = [&] {
+			//	compare_one_size_to_other(data, low_index, low_high_index, high_index, result, n);
+			//};
+			//pool.AddJob(doThing);
 		}
 
 	}
 
 	// Finish all threads
-	cout << "STOPPING" << endl;
-	pool.JoinAll();
-	//for (int i = 0; i < comparingMultiple.size(); i++) {
-	//	if (comparingMultiple[i].joinable()) {
-	//		comparingMultiple[i].join();
-	//	}
-	//	else {
-	//		cout << "IDK" << endl;
-	//	}
-	//}
+	//cout << "STOPPING" << endl;
+	//pool.WaitAll();
+	for (int i = 0; i < comparingMultiple.size(); i++) {
+		if (comparingMultiple[i].joinable()) {
+			comparingMultiple[i].join();
+		}
+		else {
+			cout << "IDK" << endl;
+		}
+	}
 
 	uint32_t count_result = 0;
 	for each (uint32_t status in result)
 	{
 		count_result += status;
 	}
-
 	return count_result;
 }
 
