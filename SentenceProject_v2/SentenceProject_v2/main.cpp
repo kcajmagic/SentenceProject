@@ -16,8 +16,10 @@
 #include "DamerauLevenshtein.h"
 #include "MergeSort.h"
 #include "Output.h"
+#include "ThreadPool.h"
 
 using namespace std;
+using nbsdx::concurrent::ThreadPool;
 
 int main(int argc, char** argv) {
 
@@ -26,7 +28,9 @@ int main(int argc, char** argv) {
 	string input_filename = "0";
 	short val;
 	int input_distance = 0;
+	unsigned number = 0;
 	bool output_file;
+	
 	cout << "output the file 0(do nothing) or 1(write file) ";
 	cin >> val;
 	output_file = (val == 0) ? false : true;
@@ -92,6 +96,7 @@ int main(int argc, char** argv) {
 				}
 				else {
 					write_lines(data, distance, (to_string(distance) + "_at_" + filename), hasher);
+					cout << "Data Lines " << data.size() << " " << result << endl ;
 					result = data.size() - result;
 
 				}

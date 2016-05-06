@@ -153,6 +153,7 @@
     <ClInclude Include="PreProcces.h" />
     <ClInclude Include="Procces.h" />
     <ClInclude Include="Sentence.h" />
+    <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WordHasher.h" />
   </ItemGroup>

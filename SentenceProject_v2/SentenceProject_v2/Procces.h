@@ -13,8 +13,11 @@
 
 #include "DamerauLevenshtein.h"
 #include "Sentence.h"
+#include "ThreadPool.h"
+
 
 using namespace std;
+using nbsdx::concurrent::ThreadPool;
 
 mutex mtx;
 mutex lock_store;
@@ -53,7 +56,7 @@ ostream &operator<<(ostream &output, const vector<uint32_t> vector) {
 }
 
 
-void compare_one_size_to_other_with_store(vector<Sentence>& data, uint32_t low_lower_index,
+void compare_one_size_to_other(vector<Sentence>& data, uint32_t low_lower_index,
 	uint32_t low_higher_index, uint32_t high_higher_index, vector<uint32_t>& result, unsigned int n) {
 
 	uint32_t count = 0;
@@ -64,11 +67,11 @@ void compare_one_size_to_other_with_store(vector<Sentence>& data, uint32_t low_l
 
 	for (unsigned int i = low_lower_index; i <= low_higher_index; i++) {
 		for (unsigned int j = low_higher_index + 1; j <= high_higher_index; j++) {
-			/*mtx.lock();
-			cout << "Compare " << i << " - " << j << endl;
-			cout << "I: " << data[i].sentence();
-			cout << "J: " << data[j].sentence() << endl;
-			mtx.unlock();*/
+			//mtx.lock();
+			//cout << "Compare " << i << " - " << j << endl;
+			//cout << "I: " << data[i].sentence();
+			//cout << "J: " << data[j].sentence() << endl;
+			//mtx.unlock();
 			if (should_compare(data, i, j, n)) {
 				value = damerauLevenshteinDistance(data[i].sentence(), data[j].sentence());
 			}
@@ -92,7 +95,7 @@ void compare_one_size_to_other_with_store(vector<Sentence>& data, uint32_t low_l
 	mtx.unlock();
 }
 
-void compare_with_store(vector<Sentence>& data, uint32_t lower_index, uint32_t higher_index, vector<uint32_t>& result, unsigned int n, uint32_t index) {
+void compare_same_size(vector<Sentence>& data, uint32_t lower_index, uint32_t higher_index, vector<uint32_t>& result, unsigned int n, uint32_t index) {
 	uint32_t count = 0;
 	//mtx.lock();
 	//cout << "************** Thread "<< " | " << lower_index << " <-> " << higher_index << " |---> Size " << data.size() << " n " << n << endl;
@@ -101,11 +104,11 @@ void compare_with_store(vector<Sentence>& data, uint32_t lower_index, uint32_t h
 	for (int i = lower_index; i <= higher_index; i++) {
 		for (int j = i + 1; j <= higher_index; j++) {
 
-		/*	mtx.lock();
-			cout << "Compare " << i << " - " << j << endl;
-			cout << "I: " << data[i].sentence();
-			cout << "J: " << data[j].sentence() << endl;
-			mtx.unlock();*/
+			//mtx.lock();
+			//cout << "Compare " << i << " - " << j << endl;
+			//cout << "I: " << data[i].sentence();
+			//cout << "J: " << data[j].sentence() << endl;
+			//mtx.unlock();
 			//if (should_compare(data, i, j, n)) {
 				value = damerauLevenshteinDistance(data[i].sentence(), data[j].sentence());
 			//}
@@ -132,6 +135,7 @@ void compare_with_store(vector<Sentence>& data, uint32_t lower_index, uint32_t h
 
 
 uint32_t compare(vector<Sentence>& data, unsigned int n) {
+	ThreadPool<MAX_THREADS> pool;
 	vector<thread> comparingMultiple;
 	uint32_t low_index = 0;
 	uint32_t low_size = 0;
@@ -148,9 +152,12 @@ uint32_t compare(vector<Sentence>& data, unsigned int n) {
 			high_index = i;
 		}
 		else {
-			thread compareThread(compare_with_store, ref(data), low_index, high_index, ref(result), n, i);
-			comparingMultiple.push_back(move(compareThread));
-
+			/*thread compareThread(compare_with_store, ref(data), low_index, high_index, ref(result), n, i);
+			comparingMultiple.push_back(move(compareThread));*/
+			std::function<void()> doThing = [&] {
+				compare_same_size(data, low_index, high_index, result, n, i);
+			};
+			pool.AddJob(doThing);
 			low_index = i;
 			low_size = data[i].size();
 
@@ -216,22 +223,28 @@ uint32_t compare(vector<Sentence>& data, unsigned int n) {
 			cout << "Thread  L_I " << low_index << "  L_H_I " << low_high_index << " H_I  " << high_index << endl;
 			mtx.unlock();
 			*/
-			thread compareThread(compare_one_size_to_other_with_store, ref(data), low_index, low_high_index, high_index, ref(result), n);
-			comparingMultiple.push_back(move(compareThread));
+			//thread compareThread(compare_one_size_to_other_with_store, ref(data), low_index, low_high_index, high_index, ref(result), n);
+			//comparingMultiple.push_back(move(compareThread));
+			std::function<void()> doThing = [&] {
+				compare_one_size_to_other(data, low_index, low_high_index, high_index, result, n);
+			};
+			pool.AddJob(doThing);
 
 		}
 
 	}
 
 	// Finish all threads
-	for (int i = 0; i < comparingMultiple.size(); i++) {
-		if (comparingMultiple[i].joinable()) {
-			comparingMultiple[i].join();
-		}
-		else {
-			cout << "IDK" << endl;
-		}
-	}
+	cout << "STOPPING" << endl;
+	pool.JoinAll();
+	//for (int i = 0; i < comparingMultiple.size(); i++) {
+	//	if (comparingMultiple[i].joinable()) {
+	//		comparingMultiple[i].join();
+	//	}
+	//	else {
+	//		cout << "IDK" << endl;
+	//	}
+	//}
 
 	uint32_t count_result = 0;
 	for each (uint32_t status in result)
